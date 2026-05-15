@@ -59,4 +59,38 @@ hasPerfectScore := sift.From(scores).Any(func(s int) bool {
 })
 ```
 
+# Update on version v1.0.1
+## More features:
+* Distinct Easily remove all duplicate values from your collection. It works with any comparable types (numbers, strings, etc.).
+```go
+numbers := []int{1, 2, 2, 3, 1, 4, 4, 5}
+res := sift.From(numbers).Distinct().ToSlice()
+
+// Output: [1, 2, 3, 4, 5]
+```
+* Select: Transformation (Mapping)
+    The Select method allows you to transform elements from one type to another (e.g., from a struct to a string or a number).
+
+    ⚠️ Important Note on Chaining:
+    Due to Go's generic limitations, methods cannot introduce new type parameters. This means Select breaks the fluent chain (you can't call it with a dot after .Where()). It must be called as a standalone function.
+```go
+type User struct {
+    ID   int
+    Name string
+}
+
+users := []User{
+    {ID: 1, Name: "Ivan"},
+    {ID: 2, Name: "Oleg"},
+}
+
+query := sift.From(users)
+namesQuery := sift.Select(query, func(u User) string {
+    return u.Name
+})
+
+names := namesQuery.ToSlice()
+// Output: ["Ivan", "Oleg"]
+```
+
 # Contributing: "Feel free to open issues or submit pull requests!"
