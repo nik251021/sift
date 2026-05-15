@@ -31,3 +31,16 @@ func (q Query[T]) Skip(n int) Query[T] {
 	}
 	return Query[T]{items: q.items[n:]}
 }
+
+func (q Query[T]) Distinct() Query[T] {
+	seen := make(map[any]struct{})
+	result := make([]T, 0)
+
+	for _, v := range q.items {
+		if _, ok := seen[v]; !ok {
+			seen[v] = struct{}{}
+			result = append(result, v)
+		}
+	}
+	return From(result)
+}
